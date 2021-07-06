@@ -10,10 +10,12 @@ import (
 
 func main() {
 	var w, h, c, r int
+	var fj bool
 	flag.IntVar(&w, "w", 2, "The width")
 	flag.IntVar(&h, "h", 2, "The height")
 	flag.IntVar(&c, "c", 0, "The column")
 	flag.IntVar(&r, "r", 0, "The row")
+	flag.BoolVar(&fj, "fj", false, "Use the FJ implementation")
 	flag.Parse()
 
 	if c > w {
@@ -34,9 +36,17 @@ func main() {
 	}
 
 	if c > 0 && r > 0 {
-		fmt.Printf("value is %d\n", findValue(w, h, r, c))
+		if fj {
+			fmt.Printf("value is %d\n", findValueFJ(w, h, r, c))
+		} else {
+			fmt.Printf("value is %d\n", findValue8(w, h, r, c))
+		}
 	} else {
-		printTable(w, h)
+		if fj {
+			printTableFJ(w, h)
+		} else {
+			printTable(w, h)
+		}
 	}
 }
 
@@ -44,6 +54,15 @@ func printTable(width, height int) {
 	for r := 1; r <= height; r++ {
 		for c := 1; c <= width; c++ {
 			fmt.Printf("%3d ", findValue8(width, height, r, c))
+		}
+		fmt.Print("\n")
+	}
+}
+
+func printTableFJ(width, height int) {
+	for r := 0; r < height; r++ {
+		for c := 0; c < width; c++ {
+			fmt.Printf("%3d ", findValueFJ(width, height, r, c))
 		}
 		fmt.Print("\n")
 	}
@@ -232,4 +251,17 @@ func findValue8(width, height, row, col int) int {
 		value -= ((colOffset - width - 1) * (colOffset - width)) / 2
 	}
 	return value
+}
+
+// funcValueFJ is an implementation of a working answer from another participant, only to compare perfs
+func findValueFJ(width, height, row, col int) int {
+	s := row + col
+	var p, q int
+	if s >= height {
+		p = s + 1 - height
+	}
+	if s >= width {
+		q = s - width
+	}
+	return ((s*(s+1) - p*(p+1) - q*(q+1)) >> 1) + col + 1
 }

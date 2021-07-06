@@ -21,6 +21,8 @@ I tried to write code as performant as possible, in Go. I chose not to rely on v
 
 I made 8 different tries, implemented in functions named "findValue", "findValue2", ..., "findValue8".
 
+Oh, by the way, I started my indexes at 1, oops... The instructions stated coordinates should start at [0, 0]. Well, I had fun nonetheless.
+
 ## findValue
 
 Loops that increment the value to add 1 + 2 + ..., etc. Not really optimized, but working, it is composed of two loops.
@@ -140,12 +142,32 @@ The result is more or less the same as with findValue5, which is probably explai
 
 How much can we compute in a reasonable amount of time?
 
+Benchmark result:
+
 ```plain
 BenchmarkFindValue8_10000x10000-4   	      33	  33543685 ns/op
 BenchmarkFindValue8_100000x100000-4   	       1	3652251790 ns/op
 ```
 
 100 million values take 33ms, 10 billion values take 3,7secs. Looks reasonable to me...
+
+# findValueFJ
+
+Another participant, FJ, has suggested a very neat and short solution. Honestly, I don't understand it, but well, I haven't tried much. It is here only for performance comparison. If you want to use it with the compiled executables, simply add the `-fj` flag.
+
+Benchmark result:
+
+```plain
+BenchmarkFindValueFJ_1000x1000-4       	    3396	    346946 ns/op
+BenchmarkFindValueFJ_100x100-4         	  255729	      4591 ns/op
+BenchmarkFindValueFJ_20x20-4           	 7260736	       164.8 ns/op
+BenchmarkFindValueFJ_3x5-4             	133179514	         8.939 ns/op
+BenchmarkFindValueFJ_10000x10000-4     	      33	  32847506 ns/op
+BenchmarkFindValueFJ_100000x100000-4   	       1	3351124175 ns/op
+```
+
+It takes 347µs to calculate all values for a 1000×1000 table, 164 ns for a 20×20 table. 100 million values take 33ms, 10 billion values take 3,4secs.
+Well, I thought this solution would be better, but I realize it is comparable.
 
 ## Compiled
 
