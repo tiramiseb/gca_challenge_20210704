@@ -146,3 +146,7 @@ BenchmarkFindValue8_100000x100000-4   	       1	3652251790 ns/op
 ```
 
 100 million values take 33ms, 10 billion values take 3,7secs. Looks reasonable to me...
+
+## Compiled
+
+See compiled executables in the `compiled/` subdirectory.
