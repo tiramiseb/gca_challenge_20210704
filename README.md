@@ -23,6 +23,8 @@ I made 8 different tries, implemented in functions named "findValue", "findValue
 
 Oh, by the way, I started my indexes at 1, oops... The instructions stated coordinates should start at [0, 0]. Well, I had fun nonetheless.
 
+Well, after reading other comments on the challenge (I purposedly didn't read them before completing my participation), I learnt that the solution I used for findValue4 and successive answers is based on [triangular numbers](https://en.wikipedia.org/wiki/Triangular_number).
+
 ## findValue
 
 Loops that increment the value to add 1 + 2 + ..., etc. Not really optimized, but working, it is composed of two loops.
