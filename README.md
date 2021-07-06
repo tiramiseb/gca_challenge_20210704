@@ -19,7 +19,7 @@ I chose to not return the 2 dimensions table, but to focus on the second questio
 
 I tried to write code as performant as possible, in Go. I chose not to rely on values from previous cells to find value of a specific cell.
 
-I made 7 different tries, implemented in functions named "findValue", "findValue2", ..., "findValue7".
+I made 8 different tries, implemented in functions named "findValue", "findValue2", ..., "findValue8".
 
 ## findValue
 
