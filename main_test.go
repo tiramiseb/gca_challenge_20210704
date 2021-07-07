@@ -627,3 +627,75 @@ func BenchmarkFindValueDBoptim_100000x100000(b *testing.B) {
 		}
 	}
 }
+
+func BenchmarkFindValueDBoptim2_1000x1000(b *testing.B) {
+	h := 1000
+	w := 1000
+	for i := 0; i < b.N; i++ {
+		for r := 0; r < h; r++ {
+			for c := 0; c < w; c++ {
+				findValueDBoptim2(w, h, r, c)
+			}
+		}
+	}
+}
+
+func BenchmarkFindValueDBoptim2_100x100(b *testing.B) {
+	h := 100
+	w := 100
+	for i := 0; i < b.N; i++ {
+		for r := 0; r < h; r++ {
+			for c := 0; c < w; c++ {
+				findValueDBoptim2(w, h, r, c)
+			}
+		}
+	}
+}
+
+func BenchmarkFindValueDBoptim2_20x20(b *testing.B) {
+	h := 20
+	w := 20
+	for i := 0; i < b.N; i++ {
+		for r := 0; r < h; r++ {
+			for c := 0; c < w; c++ {
+				findValueDBoptim2(w, h, r, c)
+			}
+		}
+	}
+}
+
+func BenchmarkFindValueDBoptim2_3x5(b *testing.B) {
+	h := 3
+	w := 5
+	for i := 0; i < b.N; i++ {
+		for r := 0; r < h; r++ {
+			for c := 0; c < w; c++ {
+				findValueDBoptim2(w, h, r, c)
+			}
+		}
+	}
+}
+
+func BenchmarkFindValueDBoptim2_10000x10000(b *testing.B) {
+	h := 10000
+	w := 10000
+	for i := 0; i < b.N; i++ {
+		for r := 0; r < h; r++ {
+			for c := 0; c < w; c++ {
+				findValueDBoptim2(w, h, r, c)
+			}
+		}
+	}
+}
+
+func BenchmarkFindValueDBoptim2_100000x100000(b *testing.B) {
+	h := 100000
+	w := 100000
+	for i := 0; i < b.N; i++ {
+		for r := 0; r < h; r++ {
+			for c := 0; c < w; c++ {
+				findValueDBoptim2(w, h, r, c)
+			}
+		}
+	}
+}

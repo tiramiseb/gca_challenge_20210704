@@ -41,7 +41,7 @@ func main() {
 		if fj {
 			fmt.Printf("value is %d\n", findValueFJ(w, h, r, c))
 		} else if db {
-			fmt.Printf("value is %d\n", findValueDBoptim(w, h, r, c))
+			fmt.Printf("value is %d\n", findValueDBoptim2(w, h, r, c))
 		} else {
 			fmt.Printf("value is %d\n", findValue8(w, h, r, c))
 		}
@@ -77,7 +77,7 @@ func printTableFJ(width, height int) {
 func printTableDB(width, height int) {
 	for r := 0; r < height; r++ {
 		for c := 0; c < width; c++ {
-			fmt.Printf("%3d ", findValueDBoptim(width, height, r, c))
+			fmt.Printf("%3d ", findValueDBoptim2(width, height, r, c))
 		}
 		fmt.Print("\n")
 	}
@@ -308,6 +308,7 @@ func findValueDB(width, height, row, col int) int {
 	// Anything else
 	return triangleNumberDB(sizeOfCorner) + (diagonalIndex-sizeOfCorner)*(sizeOfCorner+1) + shiftDirection
 }
+
 func findValueDBoptim(width, height, row, col int) int {
 	sizeOfCorner := int(math.Min(float64(width-1), float64(height-1)))
 	diagonalIndex := col + row
@@ -334,4 +335,32 @@ func findValueDBoptim(width, height, row, col int) int {
 
 	// Anything else
 	return sizeOfCorner*(sizeOfCorner+1)/2 + (diagonalIndex-sizeOfCorner)*(sizeOfCorner+1) + shiftDirection
+}
+
+func findValueDBoptim2(width, height, row, col int) int {
+	var sizeOfCorner int
+	if width < height {
+		sizeOfCorner = width - 1
+	} else {
+		sizeOfCorner = height - 1
+	}
+	diagonalIndex := col + row
+
+	if diagonalIndex < sizeOfCorner {
+		// Upper-left corner
+		return diagonalIndex*(diagonalIndex+1)/2 + col
+	}
+
+	reverseDiagonalIndex := width + height - 2 - diagonalIndex
+
+	if reverseDiagonalIndex < sizeOfCorner {
+		// Bottom-right corner
+		return width*height - (reverseDiagonalIndex+1)*(reverseDiagonalIndex+2)/2 + height - 1 - row
+	}
+
+	// Anything else
+	if width > height {
+		return sizeOfCorner*(sizeOfCorner+1)/2 + (diagonalIndex-sizeOfCorner)*(sizeOfCorner+1) + height - 1 - row
+	}
+	return sizeOfCorner*(sizeOfCorner+1)/2 + (diagonalIndex-sizeOfCorner)*(sizeOfCorner+1) + col
 }

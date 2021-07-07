@@ -197,7 +197,7 @@ It takes 8ms to calculate all values for a 1000×1000 table, 4µs for a 20×20 t
 
 ## findValueDBoptim
 
-I tried to optimize DB's answer, removing the function call and avoiding variables initialization when they are unneeded, while keeping the variables, in order to avoid getting too far from the implementation idea. If you want to use it with the compiled executables, simply add the `-db` flag.
+I tried to optimize DB's answer, removing the function call and avoiding variables initialization when they are unneeded, while keeping the variables, in order to avoid getting too far from the implementation idea.
 
 Benchmark result:
 
@@ -212,25 +212,41 @@ BenchmarkFindValueDBoptim_100000x100000-4              1        71728461858 ns/o
 
 It takes 7ms to calculate all values for a 1000×1000 table, 3µs for a 20×20 table. 100 million values take 723ms, 10 billion values take 72s. It is slightly better than original suggestion, but not by as much as I imagined...
 
+## findValueDBoptim2
+
+After talking with DB, we tried to improve his implementation, which results in a huge improvement. However, it is still slower than FJ's and mine, sorry bro :sweat_smile:. If you want to use it with the compiled executables, simply add the `-db` flag.
+
+Benchmark result:
+
+```plain
+BenchmarkFindValueDBoptim2_1000x1000-4               324           3457180 ns/op
+BenchmarkFindValueDBoptim2_100x100-4               31789             36537 ns/op
+BenchmarkFindValueDBoptim2_20x20-4                715617              1655 ns/op
+BenchmarkFindValueDBoptim2_3x5-4                20649829                57.84 ns/op
+BenchmarkFindValueDBoptim2_10000x10000-4               3         339722170 ns/op
+BenchmarkFindValueDBoptim2_100000x100000-4             1        36047289752 ns/op
+```
+
 ## The whole benchmark values
 
 You love tables? Here they are!
 
 The comparison table:
 
-| impl.            |    1000×1000 |      100×100 |        20×20 |          3×5 |   10000×10000 | 100000×100000 |
-| ---------------- | -----------: | -----------: | -----------: | -----------: | ------------: | ------------: |
-| findValue        | 422 101,9 µs |   545 759 ns |   4 603,0 ns |    63,120 ns |             / |             / |
-| findValue2       | 919 721,7 µs | 1 388 507 ns |   7 799,0 ns |    51,870 ns |             / |             / |
-| findValue3       | 362 642,0 µs |   512 495 ns |   4 329,0 ns |    48,840 ns |             / |             / |
-| findValue4       |   5 599,2 µs |    57 617 ns |   2 224,0 ns |    77,170 ns |             / |             / |
-| findValue5       | **334,8 µs** |     4 590 ns | **165,7 ns** |     9,267 ns |             / |             / |
-| findValue6       |   4 726,0 µs |    46 808 ns |   2 146,0 ns |    69,170 ns |             / |             / |
-| findValue7       |   4 346,2 µs |    46 901 ns |   2 156,0 ns |    68,860 ns |             / |             / |
-| findValue8       | **335,0 µs** | **3 999 ns** | **166,0 ns** |     9,793 ns | **32,972 ms** |   **3,327 s** |
-| findValueFJ      | **336,8 µs** |     4 601 ns | **166,2 ns** | **8,905 ns** | **33,028 ms** |   **3,315 s** |
-| findValueDB      |   7 739,1 µs |    80 003 ns |   3 549,0 ns |   125,200 ns |    784,594 ms |      77,396 s |
-| findValueDBoptim |   7 188,2 µs |    74 141 ns |   3 375,0 ns |   121,500 ns |    722,839 ms |      71,728 s |
+| impl.             |    1000×1000 |      100×100 |        20×20 |          3×5 |   10000×10000 | 100000×100000 |
+| ----------------- | -----------: | -----------: | -----------: | -----------: | ------------: | ------------: |
+| findValue         | 422 101,9 µs |   545 759 ns |   4 603,0 ns |    63,120 ns |             / |             / |
+| findValue2        | 919 721,7 µs | 1 388 507 ns |   7 799,0 ns |    51,870 ns |             / |             / |
+| findValue3        | 362 642,0 µs |   512 495 ns |   4 329,0 ns |    48,840 ns |             / |             / |
+| findValue4        |   5 599,2 µs |    57 617 ns |   2 224,0 ns |    77,170 ns |             / |             / |
+| findValue5        | **334,8 µs** |     4 590 ns | **165,7 ns** |     9,267 ns |             / |             / |
+| findValue6        |   4 726,0 µs |    46 808 ns |   2 146,0 ns |    69,170 ns |             / |             / |
+| findValue7        |   4 346,2 µs |    46 901 ns |   2 156,0 ns |    68,860 ns |             / |             / |
+| findValue8        | **335,0 µs** | **3 999 ns** | **166,0 ns** |     9,793 ns | **32,972 ms** |   **3,327 s** |
+| findValueFJ       | **336,8 µs** |     4 601 ns | **166,2 ns** | **8,905 ns** | **33,028 ms** |   **3,315 s** |
+| findValueDB       |   7 739,1 µs |    80 003 ns |   3 549,0 ns |   125,200 ns |    784,594 ms |      77,396 s |
+| findValueDBoptim  |   7 188,2 µs |    74 141 ns |   3 375,0 ns |   121,500 ns |    722,839 ms |      71,728 s |
+| findValueDBoptim2 |   3 457,2 µs |    36 537 ns |   1 655,0 ns |    57,840 ns |    339,722 ms |      36,047 s |
 
 Here are some lessons I can think of:
 
@@ -302,6 +318,12 @@ BenchmarkFindValueDBoptim_20x20-4                 352962              3375 ns/op
 BenchmarkFindValueDBoptim_3x5-4                  8932149               121.5 ns/op
 BenchmarkFindValueDBoptim_10000x10000-4                2         722839825 ns/op
 BenchmarkFindValueDBoptim_100000x100000-4              1        71728461858 ns/op
+BenchmarkFindValueDBoptim2_1000x1000-4               324           3457180 ns/op
+BenchmarkFindValueDBoptim2_100x100-4               31789             36537 ns/op
+BenchmarkFindValueDBoptim2_20x20-4                715617              1655 ns/op
+BenchmarkFindValueDBoptim2_3x5-4                20649829                57.84 ns/op
+BenchmarkFindValueDBoptim2_10000x10000-4               3         339722170 ns/op
+BenchmarkFindValueDBoptim2_100000x100000-4             1        36047289752 ns/op
 ```
 
 ## Compiled
