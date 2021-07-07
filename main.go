@@ -5,17 +5,19 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math"
 	"os"
 )
 
 func main() {
 	var w, h, c, r int
-	var fj bool
+	var fj, db bool
 	flag.IntVar(&w, "w", 2, "The width")
 	flag.IntVar(&h, "h", 2, "The height")
 	flag.IntVar(&c, "c", 0, "The column")
 	flag.IntVar(&r, "r", 0, "The row")
 	flag.BoolVar(&fj, "fj", false, "Use the FJ implementation")
+	flag.BoolVar(&db, "db", false, "Use the DB implementation")
 	flag.Parse()
 
 	if c > w {
@@ -38,12 +40,16 @@ func main() {
 	if c > 0 && r > 0 {
 		if fj {
 			fmt.Printf("value is %d\n", findValueFJ(w, h, r, c))
+		} else if db {
+			fmt.Printf("value is %d\n", findValueDBoptim(w, h, r, c))
 		} else {
 			fmt.Printf("value is %d\n", findValue8(w, h, r, c))
 		}
 	} else {
 		if fj {
 			printTableFJ(w, h)
+		} else if db {
+			printTableDB(w, h)
 		} else {
 			printTable(w, h)
 		}
@@ -63,6 +69,15 @@ func printTableFJ(width, height int) {
 	for r := 0; r < height; r++ {
 		for c := 0; c < width; c++ {
 			fmt.Printf("%3d ", findValueFJ(width, height, r, c))
+		}
+		fmt.Print("\n")
+	}
+}
+
+func printTableDB(width, height int) {
+	for r := 0; r < height; r++ {
+		for c := 0; c < width; c++ {
+			fmt.Printf("%3d ", findValueDBoptim(width, height, r, c))
 		}
 		fmt.Print("\n")
 	}
@@ -264,4 +279,59 @@ func findValueFJ(width, height, row, col int) int {
 		q = s - width
 	}
 	return ((s*(s+1) - p*(p+1) - q*(q+1)) >> 1) + col + 1
+}
+
+// findValueDB is an implementation of a working answer from another participant, only to compare perfs
+func triangleNumberDB(n int) int {
+	return n * (n + 1) / 2
+}
+func findValueDB(width, height, row, col int) int {
+	sizeOfCorner := int(math.Min(float64(width-1), float64(height-1)))
+	diagonalIndex := col + row
+	reverseDiagonalIndex := width + height - 2 - diagonalIndex
+	reverseRow := height - 1 - row
+	var shiftDirection int
+	if width > height {
+		shiftDirection = reverseRow
+	} else {
+		shiftDirection = col
+	}
+
+	if diagonalIndex < sizeOfCorner {
+		// Upper-left corner
+		return triangleNumberDB(diagonalIndex) + col
+	}
+	if reverseDiagonalIndex < sizeOfCorner {
+		// Bottom-right corner
+		return width*height - triangleNumberDB(reverseDiagonalIndex+1) + reverseRow
+	}
+	// Anything else
+	return triangleNumberDB(sizeOfCorner) + (diagonalIndex-sizeOfCorner)*(sizeOfCorner+1) + shiftDirection
+}
+func findValueDBoptim(width, height, row, col int) int {
+	sizeOfCorner := int(math.Min(float64(width-1), float64(height-1)))
+	diagonalIndex := col + row
+
+	if diagonalIndex < sizeOfCorner {
+		// Upper-left corner
+		return diagonalIndex*(diagonalIndex+1)/2 + col
+	}
+
+	reverseRow := height - 1 - row
+	reverseDiagonalIndex := width + height - 2 - diagonalIndex
+
+	if reverseDiagonalIndex < sizeOfCorner {
+		// Bottom-right corner
+		return width*height - (reverseDiagonalIndex+1)*(reverseDiagonalIndex+2)/2 + reverseRow
+	}
+
+	var shiftDirection int
+	if width > height {
+		shiftDirection = reverseRow
+	} else {
+		shiftDirection = col
+	}
+
+	// Anything else
+	return sizeOfCorner*(sizeOfCorner+1)/2 + (diagonalIndex-sizeOfCorner)*(sizeOfCorner+1) + shiftDirection
 }
